@@ -37,6 +37,19 @@ enum Parse {
     Words(Vec<String>)
 }
 
+fn sanitize_word(word: &str) -> String {
+    let mut s = String::new();
+
+    // convert to lowercase
+    for c in word.chars() {
+        for d in c.to_lowercase() {
+            s.push(d);
+        }
+    }
+
+    s
+}
+
 fn parse_input(input: &String) -> Parse {
     let words: Vec<&str> = input.split_whitespace().collect();
 
@@ -44,13 +57,17 @@ fn parse_input(input: &String) -> Parse {
         return Parse::Empty;
     }
 
-    // TODO Parse::Quit
-
     let mut words2: Vec<String> = Vec::new();
 
     for w in words {
-        words2.push(String::from(w));
+        let s = sanitize_word(w);
+
+        if s != "" {
+            words2.push(s);
+        }
     }
+
+    // TODO Parse::Quit
 
     Parse::Words(words2)
 }
