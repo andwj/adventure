@@ -67,6 +67,12 @@ fn parse_input(input: &String) -> Parse {
         }
     }
 
+    match words2[0].as_str() {
+        "exit" => return Parse::Quit,
+        "quit" => return Parse::Quit,
+        _      => (),
+    }
+
     // TODO Parse::Quit
 
     Parse::Words(words2)
