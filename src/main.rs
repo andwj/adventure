@@ -50,6 +50,20 @@ fn sanitize_word(word: &str) -> String {
     s
 }
 
+fn sanitize_list(words: &Vec<&str>) -> Vec<String> {
+    let mut result: Vec<String> = Vec::new();
+
+    for w in words {
+        let s = sanitize_word(w);
+
+        if s != "" {
+            result.push(s);
+        }
+    }
+
+    result
+}
+
 fn parse_input(input: &String) -> Parse {
     let words: Vec<&str> = input.split_whitespace().collect();
 
@@ -57,25 +71,16 @@ fn parse_input(input: &String) -> Parse {
         return Parse::Empty;
     }
 
-    let mut words2: Vec<String> = Vec::new();
+    let words = sanitize_list(&words);
 
-    for w in words {
-        let s = sanitize_word(w);
-
-        if s != "" {
-            words2.push(s);
-        }
-    }
-
-    match words2[0].as_str() {
+    // art thou a quitter?
+    match words[0].as_str() {
         "exit" => return Parse::Quit,
         "quit" => return Parse::Quit,
         _      => (),
     }
 
-    // TODO Parse::Quit
-
-    Parse::Words(words2)
+    Parse::Words(words)
 }
 
 fn main() {
