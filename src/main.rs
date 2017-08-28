@@ -18,12 +18,28 @@ impl World {
     }
 }
 
-fn intro() {
+fn intro_msg() {
     println!("Welcome.....");
 }
 
+fn quit_msg() {
+    println!("Goodbye!");
+}
+
+enum Parse {
+    Empty,
+    Bad,
+    Quit,
+    Words(Vec<String>)
+}
+
+fn parse_input(input: &String) -> Parse {
+    // TODO
+    Parse::Quit
+}
+
 fn main() {
-    intro();
+    intro_msg();
 
     let mut world = World::new();
 
@@ -34,7 +50,15 @@ fn main() {
         io::stdin().read_line(&mut input)
                    .expect("Error reading input!");
 
-        // TODO check for quit
+        // parse the command into words
+        let parse = parse_input(&input);
+
+        match parse {
+            Parse::Empty => /* ignore a blank line */ (),
+            Parse::Bad   => /* parser said why */ (),
+            Parse::Quit  => { quit_msg(); break; }
+            Parse::Words(w) => (),  /* TODO */
+        }
 
         // TODO send command to world
     }
