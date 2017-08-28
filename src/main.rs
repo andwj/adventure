@@ -9,16 +9,14 @@
 use std::io;
 
 struct World {
+    solved: bool,
 }
 
 impl World {
     fn new() -> World {
         World {
+            solved: false,
         }
-    }
-
-    fn command(&mut self, words: &Vec<String>) {
-        // TODO
     }
 }
 
@@ -30,11 +28,15 @@ fn quit_msg() {
     println!("Goodbye!");
 }
 
+fn solved_msg() {
+    println!("Congratulations, you have won!");
+}
+
 enum Parse {
     Empty,
     Bad,
+    Words(Vec<String>),
     Quit,
-    Words(Vec<String>)
 }
 
 fn sanitize_word(word: &str) -> String {
@@ -83,12 +85,34 @@ fn parse_input(input: &String) -> Parse {
     Parse::Words(words)
 }
 
+impl World {
+    fn command(&mut self, words: &Vec<String>) {
+        if words.is_empty() {
+            println!("Huh??");
+            return;
+        }
+
+        let cmd = words[0].as_str();
+
+        match cmd {
+            "win" => {
+                self.solved = true;
+                solved_msg();
+            },
+
+            _ => {
+                println!("I don't understand '{}'", cmd);
+            }
+        }
+    }
+}
+
 fn main() {
     intro_msg();
 
     let mut world = World::new();
 
-    loop {
+    while ! world.solved {
         // read a command
         let mut input = String::new();
 
@@ -99,10 +123,10 @@ fn main() {
         let parse = parse_input(&input);
 
         match parse {
-            Parse::Empty => /* ignore a blank line */ (),
-            Parse::Bad   => /* parser said why */ (),
-            Parse::Quit  => { quit_msg(); break; }
-            Parse::Words(w) => /* send command to world */ world.command(&w)
+            Parse::Empty    => /* ignore a blank line */ (),
+            Parse::Bad      => /* parser said why */ (),
+            Parse::Words(w) => /* send command to world */ world.command(&w),
+            Parse::Quit     => { quit_msg(); break; },
         }
     }
 }
