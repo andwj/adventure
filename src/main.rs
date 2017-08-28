@@ -16,6 +16,10 @@ impl World {
         World {
         }
     }
+
+    fn command(&mut self, words: &Vec<String>) {
+        // TODO
+    }
 }
 
 fn intro_msg() {
@@ -34,8 +38,21 @@ enum Parse {
 }
 
 fn parse_input(input: &String) -> Parse {
-    // TODO
-    Parse::Quit
+    let words: Vec<&str> = input.split_whitespace().collect();
+
+    if words.is_empty() {
+        return Parse::Empty;
+    }
+
+    // TODO Parse::Quit
+
+    let mut words2: Vec<String> = Vec::new();
+
+    for w in words {
+        words2.push(String::from(w));
+    }
+
+    Parse::Words(words2)
 }
 
 fn main() {
@@ -57,10 +74,8 @@ fn main() {
             Parse::Empty => /* ignore a blank line */ (),
             Parse::Bad   => /* parser said why */ (),
             Parse::Quit  => { quit_msg(); break; }
-            Parse::Words(w) => (),  /* TODO */
+            Parse::Words(w) => /* send command to world */ world.command(&w)
         }
-
-        // TODO send command to world
     }
 }
 
