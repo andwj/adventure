@@ -28,7 +28,11 @@ fn main() {
     let mut world = World::new();
 
     loop {
-        // TODO read a command
+        // read a command
+        let mut input = String::new();
+
+        io::stdin().read_line(&mut input)
+                   .expect("Error reading input!");
 
         // TODO check for quit
 
