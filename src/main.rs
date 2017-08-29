@@ -52,6 +52,7 @@ impl Exit {
 struct Room {
     description: &'static str,
     exits: Vec<Exit>,
+    objects: Vec<String>,
 }
 
 impl Room {
@@ -80,6 +81,7 @@ struct World {
     game_over: bool,
     rooms: HashMap<RoomId,Room>,
     location: RoomId,
+    inventory: Vec<String>,
 }
 
 impl World {
@@ -88,6 +90,7 @@ impl World {
             game_over: false,
             rooms: World::create_rooms(),
             location: Mountain,
+            inventory: vec![],
         }
     }
 
@@ -100,16 +103,20 @@ impl World {
                 exits: vec![
                     Exit::new( Dir::N, Forest, Lock::Free),
                 ],
+                objects: vec![
+                    String::from("sword")
+                ]
             });
 
         rm.insert(Forest,
             Room {
-                description: "You are in a forest, surrounded by dense trees and shrubs.\nA wide path slopes gently upwards to the south, whereas\nnarrow paths lead east and west.",
+                description: "You are in a forest, surrounded by dense trees and shrubs.\nA wide path slopes gently upwards to the south, and\nnarrow paths lead east and west.",
                 exits: vec![
                     Exit::new( Dir::S, Mountain, Lock::Free),
                     Exit::new( Dir::W, Lake,     Lock::Free),
                     Exit::new( Dir::E, Outside,  Lock::Free),
                 ],
+                objects: vec![]
             });
 
         rm
@@ -120,7 +127,10 @@ impl World {
 
         println!("{}", room.description);
 
-        // TODO : show items / monsters
+        // show items and monsters
+        for ob in &room.objects {
+            println!("There is a {} here.", ob);
+        }
     }
 }
 
