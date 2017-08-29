@@ -281,7 +281,7 @@ impl World {
 
             "give" | "offer" => self.cmd_give(noun1, noun2),
 
-            "kill" | "attack" | "hit" | "fight" => self.cmd_kill(noun1),
+            "kill" | "attack" | "hit" | "fight" => self.cmd_attack(noun1),
 
             "open" | "unlock" => self.cmd_open(noun1),
 
@@ -439,17 +439,37 @@ impl World {
             return;
         }
 
-        // TODO: a puzzle involving giving
+        // TODO: a puzzle involving giving something
 
         println!("Don't be ridiculous!");
     }
 
-    fn cmd_kill(&mut self, noun1: &str) {
-        // TODO
+    fn cmd_attack(&mut self, noun1: &str) {
+        if noun1 == "" {
+            println!("Attack what??");
+            return;
+        }
+
+        // TODO: some funny messages about attacking something
+
+        let have_sword = self.has_object("sword");
+
+        if have_sword {
+            println!("You swing your sword, but miss!");
+        } else {
+            println!("You bruise your hand in the attempt.");
+        }
     }
 
     fn cmd_open(&mut self, noun1: &str) {
-        // TODO
+        if noun1 == "" {
+            println!("Open what??");
+            return;
+        }
+
+        // TODO: a puzzle involving unlocking a door
+
+        println!("You cannot open that!");
     }
 
     fn cmd_use(&mut self, noun1: &str) {
@@ -463,7 +483,7 @@ impl World {
             return;
         }
 
-        // TODO : a puzzle involving using
+        // TODO: a puzzle involving using something
 
         println!("You fiddle with your {}, but nothing happens.", noun1);
     }
