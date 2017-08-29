@@ -18,8 +18,8 @@ for input and output.
 TODO
 ====
 
--  add rooms
--  ability to travel between rooms
+-  add more rooms
 -  ability to get and drop objects
--  a puzzle or two
+-  a few puzzles
+-  winning condition
 
