@@ -148,6 +148,16 @@ impl World {
         }
     }
 
+    fn has_object(&self, name: &str) -> bool {
+        for i in 0 .. self.inventory.len() {
+            if self.inventory[i].as_str() == name {
+                return true;
+            }
+        }
+
+        false
+    }
+
     fn drop_object(&mut self, name: &str) -> bool {
         for i in 0 .. self.inventory.len() {
             if self.inventory[i].as_str() == name {
@@ -414,7 +424,24 @@ impl World {
     }
 
     fn cmd_give(&mut self, noun1: &str, noun2: &str) {
-        // TODO
+        if noun1 == "" {
+            println!("Give what??");
+            return;
+        }
+
+        if ! self.has_object(noun1) {
+            println!("You can't give a {}, as you don't have one!", noun1);
+            return;
+        }
+
+        if noun2 == "" {
+            println!("Give to whom??");
+            return;
+        }
+
+        // TODO: a puzzle involving giving
+
+        println!("Don't be ridiculous!");
     }
 
     fn cmd_kill(&mut self, noun1: &str) {
@@ -426,7 +453,19 @@ impl World {
     }
 
     fn cmd_use(&mut self, noun1: &str) {
-        // TODO
+        if noun1 == "" {
+            println!("Use what??");
+            return;
+        }
+
+        if ! self.has_object(noun1) {
+            println!("You don't have any {} to use.", noun1);
+            return;
+        }
+
+        // TODO : a puzzle involving using
+
+        println!("You fiddle with your {}, but nothing happens.", noun1);
     }
 }
 
