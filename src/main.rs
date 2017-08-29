@@ -265,7 +265,15 @@ impl World {
     }
 
     fn cmd_invent(&mut self) {
-        // TODO
+        println!("You are carrying:");
+
+        if self.inventory.is_empty() {
+            println!("    nothing.");
+        } else {
+            for ob in &self.inventory {
+                println!("    a {}.", ob);
+            }
+        }
     }
 
     fn cmd_look(&mut self) {
