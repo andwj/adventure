@@ -14,3 +14,12 @@ The license is CC0 license (i.e. public domain).
 This code has no dependencies (crates), it just uses std::io
 for input and output.
 
+
+TODO
+====
+
+-  add rooms
+-  ability to travel between rooms
+-  ability to get and drop objects
+-  a puzzle or two
+
