@@ -74,6 +74,16 @@ impl World {
                 ],
             });
 
+        rm.insert(Forest,
+            Room {
+                description: "You are in a forest, surrounded by dense trees and shrubs.\nA wide path spirals upwards to the south, whereas narrow\npaths lead east and west.",
+                exits: vec![
+                    Exit::new( Dir::S, Mountain, Lock::None),
+                    Exit::new( Dir::W, Lake,     Lock::None),
+                    Exit::new( Dir::E, Outside,  Lock::None),
+                ],
+            });
+
         rm
     }
 }
