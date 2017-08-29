@@ -37,8 +37,15 @@ struct Exit {
     lock: Lock,
 }
 
+impl Exit {
+    fn new(dir: Dir, dest: RoomId, lock: Lock) -> Exit {
+        Exit { dir, dest, lock }
+    }
+}
+
 struct Room {
-    exits: HashMap<Dir,Exit>,
+    description: &'static str,
+    exits: Vec<Exit>,
 }
 
 struct World {
@@ -51,9 +58,23 @@ impl World {
     fn new() -> World {
         World {
             game_over: false,
-            rooms: HashMap::new(),
+            rooms: World::populate_rooms(),
             location: Mountain,
         }
+    }
+
+    fn populate_rooms() -> HashMap<RoomId,Room> {
+        let mut rm = HashMap::new();
+
+        rm.insert(Mountain,
+            Room {
+                description: "You are standing on a large grassy mountain.\nTo the north you see a thick forest.Other directions are blocked by steep cliffs.",
+                exits: vec![
+                    Exit::new( Dir::N, Forest, Lock::None),
+                ],
+            });
+
+        rm
     }
 }
 
