@@ -9,13 +9,13 @@
 use std::io;
 
 struct World {
-    solved: bool,
+    game_over: bool,
 }
 
 impl World {
     fn new() -> World {
         World {
-            solved: false,
+            game_over: false,
         }
     }
 }
@@ -36,7 +36,6 @@ enum Parse {
     Empty,
     Bad,
     Words(Vec<String>),
-    Quit,
 }
 
 fn sanitize_word(word: &str) -> String {
@@ -75,13 +74,6 @@ fn parse_input(input: &String) -> Parse {
 
     let words = sanitize_list(&words);
 
-    // art thou a quitter?
-    match words[0].as_str() {
-        "exit" => return Parse::Quit,
-        "quit" => return Parse::Quit,
-        _      => (),
-    }
-
     Parse::Words(words)
 }
 
@@ -95,9 +87,14 @@ impl World {
         let cmd = words[0].as_str();
 
         match cmd {
+            "exit" | "quit" => {
+                quit_msg();
+                self.game_over = true;
+            },
+
             "win" => {
-                self.solved = true;
                 solved_msg();
+                self.game_over = true;
             },
 
             _ => {
@@ -112,7 +109,7 @@ fn main() {
 
     let mut world = World::new();
 
-    while ! world.solved {
+    while ! world.game_over {
         // read a command
         let mut input = String::new();
 
@@ -126,7 +123,6 @@ fn main() {
             Parse::Empty    => /* ignore a blank line */ (),
             Parse::Bad      => /* parser said why */ (),
             Parse::Words(w) => /* send command to world */ world.command(&w),
-            Parse::Quit     => { quit_msg(); break; },
         }
     }
 }
