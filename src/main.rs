@@ -256,7 +256,7 @@ impl World {
 
             "i" | "inv" | "invent" | "inventory" => self.cmd_invent(),
 
-            "look" => self.cmd_look(),
+            "look" | "l" => self.cmd_look(),
 
             "go" | "walk" => self.cmd_go(noun1),
 
