@@ -23,7 +23,8 @@ use RoomId::*;
 
 #[derive(PartialEq, Eq, Hash)]
 enum Dir {
-    N, S, E, W
+    N, S, E, W,
+    U, D, IN, OUT
 }
 
 enum Lock {
@@ -119,7 +120,7 @@ enum Parse {
 fn unwrap_str<'a>(w: Option<&'a String>) -> &'a str {
     match w {
         Some(s) => s.as_str(),
-        None    => "",
+        None    => ""
     }
 }
 
@@ -167,7 +168,7 @@ fn parse_input(input: &String) -> Parse {
 }
 
 impl World {
-    fn command(&mut self, words: &Vec<String>) {
+    fn parse_command(&mut self, words: &Vec<String>) {
         // we will access the words using an iterator
         let mut words = words.iter();
 
@@ -178,22 +179,88 @@ impl World {
             return;
         }
 
-        match cmd {
-            "exit" | "quit" | "q" => {
-                quit_msg();
-                self.game_over = true;
-            },
+        // possible nouns (etc)
+        let noun1 = unwrap_str(words.next());
+        let noun2 = unwrap_str(words.next());
 
-            // FIXME : test stuff, REMOVE THIS
-            "win" => {
-                solved_msg();
-                self.game_over = true;
-            },
+        match cmd {
+            "help" => self.cmd_help(),
+
+            "exit" | "quit" | "q" => self.cmd_quit(),
+
+            "i" | "inv" | "invent" | "inventory" => self.cmd_invent(),
+
+            "look" => self.cmd_look(),
+
+            "go" | "walk" => self.cmd_go(noun1),
+
+            "n"  | "north" | "s"  | "south" |
+            "e"  | "east"  | "w"  | "west"  |
+            "in" | "out"   | "up" | "down" => self.cmd_go(cmd),
+
+            "drop" => self.cmd_drop(noun1),
+
+            "get" | "take" => self.cmd_get(noun1),
+
+            "give" | "offer" => self.cmd_give(noun1, noun2),
+
+            "kill" | "attack" | "hit" | "fight" => self.cmd_kill(noun1),
+
+            "open" | "unlock" => self.cmd_open(noun1),
+
+            "use"  | "apply" => self.cmd_use(noun1),
 
             _ => {
                 println!("I don't understand '{}'", cmd);
             }
         }
+    }
+
+    /* implementation of each command */
+
+    fn cmd_help(&mut self) {
+        // TODO
+    }
+
+    fn cmd_quit(&mut self) {
+        quit_msg();
+        self.game_over = true;
+    }
+
+    fn cmd_invent(&mut self) {
+        // TODO
+    }
+
+    fn cmd_look(&mut self) {
+        // TODO
+    }
+
+    fn cmd_go(&mut self, noun1: &str) {
+        // TODO
+    }
+
+    fn cmd_drop(&mut self, noun1: &str) {
+        // TODO
+    }
+
+    fn cmd_get(&mut self, noun1: &str) {
+        // TODO
+    }
+
+    fn cmd_give(&mut self, noun1: &str, noun2: &str) {
+        // TODO
+    }
+
+    fn cmd_kill(&mut self, noun1: &str) {
+        // TODO
+    }
+
+    fn cmd_open(&mut self, noun1: &str) {
+        // TODO
+    }
+
+    fn cmd_use(&mut self, noun1: &str) {
+        // TODO
     }
 }
 
@@ -220,7 +287,7 @@ fn main() {
         match parse {
             Parse::Empty    => /* ignore a blank line */ (),
             Parse::Bad      => /* parser said why */ (),
-            Parse::Words(w) => /* send command to world */ world.command(&w),
+            Parse::Words(w) => world.parse_command(&w)
         }
     }
 }
