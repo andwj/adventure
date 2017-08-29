@@ -10,8 +10,10 @@ use std::io;
 use std::io::Write;
 use std::collections::HashMap;
 
-#[derive(PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash)]
 enum RoomId {
+    NONE,     // only used as result of next_room() method
+
     Mountain,
     Forest,
     Lake,
@@ -27,10 +29,12 @@ enum Dir {
     U, D, IN, OUT
 }
 
+#[derive(Clone)]
 enum Lock {
-    None,
-    Key,
-    Dragon
+    NONE,     // travel is not possible at all
+    Free,     // travel is possible and has no obstacle
+    Key,      // a key is required
+    Dragon,   // a dragon is in the way
 }
 
 struct Exit {
@@ -48,6 +52,28 @@ impl Exit {
 struct Room {
     description: &'static str,
     exits: Vec<Exit>,
+}
+
+impl Room {
+    fn can_travel(&self, dir: &Dir) -> Lock {
+        for e in &self.exits {
+            if e.dir == *dir {
+                return e.lock.clone();
+            }
+        }
+
+        Lock::NONE
+    }
+
+    fn next_room(&self, dir: &Dir) -> RoomId {
+        for e in &self.exits {
+            if e.dir == *dir {
+                return e.dest.clone();
+            }
+        }
+
+        RoomId::NONE
+    }
 }
 
 struct World {
@@ -72,24 +98,24 @@ impl World {
             Room {
                 description: "You are standing on a large grassy mountain.\nTo the north you see a thick forest.\nOther directions are blocked by steep cliffs.",
                 exits: vec![
-                    Exit::new( Dir::N, Forest, Lock::None),
+                    Exit::new( Dir::N, Forest, Lock::Free),
                 ],
             });
 
         rm.insert(Forest,
             Room {
-                description: "You are in a forest, surrounded by dense trees and shrubs.\nA wide path spirals upwards to the south, whereas narrow\npaths lead east and west.",
+                description: "You are in a forest, surrounded by dense trees and shrubs.\nA wide path slopes gently upwards to the south, whereas\nnarrow paths lead east and west.",
                 exits: vec![
-                    Exit::new( Dir::S, Mountain, Lock::None),
-                    Exit::new( Dir::W, Lake,     Lock::None),
-                    Exit::new( Dir::E, Outside,  Lock::None),
+                    Exit::new( Dir::S, Mountain, Lock::Free),
+                    Exit::new( Dir::W, Lake,     Lock::Free),
+                    Exit::new( Dir::E, Outside,  Lock::Free),
                 ],
             });
 
         rm
     }
 
-    fn describe_room(&mut self) {
+    fn describe_room(&self) {
         let room = self.rooms.get(&self.location).unwrap();
 
         println!("{}", room.description);
@@ -196,7 +222,8 @@ impl World {
 
             "n"  | "north" | "s"  | "south" |
             "e"  | "east"  | "w"  | "west"  |
-            "in" | "out"   | "up" | "down" => self.cmd_go(cmd),
+            "d"  | "down"  | "u"  | "up"    |
+            "in" | "out" => self.cmd_go(cmd),
 
             "drop" => self.cmd_drop(noun1),
 
@@ -236,7 +263,61 @@ impl World {
     }
 
     fn cmd_go(&mut self, noun1: &str) {
-        // TODO
+        if noun1 == "" {
+            println!("Go where??");
+            return;
+        }
+
+        let dir : Dir;
+
+        match noun1 {
+            "n" | "north" => dir = Dir::N,
+            "s" | "south" => dir = Dir::S,
+            "e" | "east"  => dir = Dir::E,
+            "w" | "west"  => dir = Dir::W,
+
+            "u" | "up"    => dir = Dir::U,
+            "d" | "down"  => dir = Dir::D,
+
+            "in"  => dir = Dir::IN,
+            "out" => dir = Dir::OUT,
+
+            _ => {
+                println!("I don't understand that direction.");
+                return;
+            }
+        }
+
+        let room = self.rooms.get(&self.location).unwrap();
+
+        // check for an obstacle...
+        let obst = room.can_travel(&dir);
+
+        match obst {
+            Lock::Free => (),
+
+            Lock::NONE => {
+                println!("You cannot go that way.");
+                return;
+            }
+
+            Lock::Key => {
+                println!("There is a locked door in your way.");
+                return;
+            }
+
+            _ => {
+                println!("A scary monster blocks your path!");
+                return;
+            }
+        }
+
+        self.location = room.next_room(&dir);
+
+        assert!(self.location != RoomId::NONE);
+
+        println!("");
+        self.describe_room();
     }
 
     fn cmd_drop(&mut self, noun1: &str) {
