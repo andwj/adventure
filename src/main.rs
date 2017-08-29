@@ -7,15 +7,52 @@
 //
 
 use std::io;
+use std::collections::HashMap;
+
+#[derive(PartialEq, Eq, Hash)]
+enum RoomId {
+    Mountain,
+    Forest,
+    Lake,
+    Outside,  // of the castle
+    Castle,   // inside it
+}
+
+use RoomId::*;
+
+#[derive(PartialEq, Eq, Hash)]
+enum Dir {
+    N, S, E, W
+}
+
+enum Lock {
+    None,
+    Key,
+    Dragon
+}
+
+struct Exit {
+    dir: Dir,
+    dest: RoomId,
+    lock: Lock,
+}
+
+struct Room {
+    exits: HashMap<Dir,Exit>,
+}
 
 struct World {
     game_over: bool,
+    rooms: HashMap<RoomId,Room>,
+    location: RoomId,
 }
 
 impl World {
     fn new() -> World {
         World {
             game_over: false,
+            rooms: HashMap::new(),
+            location: Mountain,
         }
     }
 }
@@ -96,6 +133,7 @@ impl World {
                 self.game_over = true;
             },
 
+            // FIXME : test stuff, REMOVE THIS
             "win" => {
                 solved_msg();
                 self.game_over = true;
