@@ -75,6 +75,21 @@ impl Room {
 
         RoomId::NONE
     }
+
+    fn get_object(&mut self, name: &str) -> bool {
+        for i in 0 .. self.objects.len() {
+            if self.objects[i].as_str() == name {
+                self.objects.swap_remove(i);
+                return true;
+            }
+        }
+
+        false
+    }
+
+    fn put_object(&mut self, name: &str) {
+        self.objects.push(String::from(name));
+    }
 }
 
 struct World {
@@ -131,6 +146,21 @@ impl World {
         for ob in &room.objects {
             println!("There is a {} here.", ob);
         }
+    }
+
+    fn drop_object(&mut self, name: &str) -> bool {
+        for i in 0 .. self.inventory.len() {
+            if self.inventory[i].as_str() == name {
+                self.inventory.swap_remove(i);
+                return true;
+            }
+        }
+
+        false
+    }
+
+    fn get_object(&mut self, name: &str) {
+        self.inventory.push(String::from(name));
     }
 }
 
@@ -348,11 +378,39 @@ impl World {
     }
 
     fn cmd_drop(&mut self, noun1: &str) {
-        // TODO
+        if noun1 == "" {
+            println!("Drop what??");
+            return;
+        }
+
+        if ! self.drop_object(noun1) {
+            println!("You are not carrying a {}.", noun1);
+            return;
+        }
+
+        let mut room = self.rooms.get_mut(&self.location).unwrap();
+
+        room.put_object(noun1);
+        println!("You drop the {}.", noun1);
     }
 
     fn cmd_get(&mut self, noun1: &str) {
-        // TODO
+        if noun1 == "" {
+            println!("Get what??");
+            return;
+        }
+
+        {
+            let mut room = self.rooms.get_mut(&self.location).unwrap();
+
+            if ! room.get_object(noun1) {
+                println!("I cannot see any {} here.", noun1);
+                return;
+            }
+        }
+
+        self.get_object(noun1);
+        println!("You pick up the {}.", noun1);
     }
 
     fn cmd_give(&mut self, noun1: &str, noun2: &str) {
