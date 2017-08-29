@@ -116,6 +116,13 @@ enum Parse {
     Words(Vec<String>),
 }
 
+fn unwrap_str<'a>(w: Option<&'a String>) -> &'a str {
+    match w {
+        Some(s) => s.as_str(),
+        None    => "",
+    }
+}
+
 fn sanitize_word(word: &str) -> String {
     let mut s = String::new();
 
@@ -161,12 +168,15 @@ fn parse_input(input: &String) -> Parse {
 
 impl World {
     fn command(&mut self, words: &Vec<String>) {
-        if words.is_empty() {
+        // we will access the words using an iterator
+        let mut words = words.iter();
+
+        let cmd = unwrap_str(words.next());
+
+        if cmd == "" {
             println!("Huh??");
             return;
         }
-
-        let cmd = words[0].as_str();
 
         match cmd {
             "exit" | "quit" | "q" => {
