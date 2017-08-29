@@ -256,7 +256,15 @@ impl World {
     /* implementation of each command */
 
     fn cmd_help(&mut self) {
-        // TODO
+        println!("Use text commands to walk around and do things.");
+        println!("Some examples:");
+        println!("    go north");
+        println!("    get the rope");
+        println!("    drop the lantern");
+        println!("    inventory");
+        println!("    unlock door");
+        println!("    kill the serpent");
+        println!("    quit");
     }
 
     fn cmd_quit(&mut self) {
