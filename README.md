@@ -2,7 +2,7 @@
 Adventure
 =========
 
-This is a very basic text adventure game, written in Rust.
+This is a very simple text adventure game, written in Rust.
 
 It was inspired by the "steveklabnik/adventure" repository
 on github, but I wanted to write something similar from scratch

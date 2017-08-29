@@ -1,5 +1,5 @@
 //
-// A very basic text adventure
+// A very simple text adventure
 //
 // by Andrew Apted, 2017.
 //
@@ -58,17 +58,17 @@ impl World {
     fn new() -> World {
         World {
             game_over: false,
-            rooms: World::populate_rooms(),
+            rooms: World::create_rooms(),
             location: Mountain,
         }
     }
 
-    fn populate_rooms() -> HashMap<RoomId,Room> {
+    fn create_rooms() -> HashMap<RoomId,Room> {
         let mut rm = HashMap::new();
 
         rm.insert(Mountain,
             Room {
-                description: "You are standing on a large grassy mountain.\nTo the north you see a thick forest.Other directions are blocked by steep cliffs.",
+                description: "You are standing on a large grassy mountain.\nTo the north you see a thick forest.\nOther directions are blocked by steep cliffs.",
                 exits: vec![
                     Exit::new( Dir::N, Forest, Lock::None),
                 ],
@@ -86,10 +86,19 @@ impl World {
 
         rm
     }
+
+    fn describe_room(&mut self) {
+        let room = self.rooms.get(&self.location).unwrap();
+
+        println!("{}", room.description);
+
+        // TODO : show items / monsters
+    }
 }
 
 fn intro_msg() {
-    println!("Welcome.....");
+    println!("Welcome to a very simple adventure game!");
+    println!("");
 }
 
 fn quit_msg() {
@@ -159,7 +168,7 @@ impl World {
         let cmd = words[0].as_str();
 
         match cmd {
-            "exit" | "quit" => {
+            "exit" | "quit" | "q" => {
                 quit_msg();
                 self.game_over = true;
             },
@@ -181,6 +190,8 @@ fn main() {
     intro_msg();
 
     let mut world = World::new();
+
+    world.describe_room();
 
     while ! world.game_over {
         // read a command
