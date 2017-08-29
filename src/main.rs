@@ -285,7 +285,8 @@ impl World {
     }
 
     fn cmd_look(&mut self) {
-        // TODO
+        println!("");
+        self.describe_room();
     }
 
     fn cmd_go(&mut self, noun1: &str) {
