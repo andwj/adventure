@@ -7,6 +7,7 @@
 //
 
 use std::io;
+use std::io::Write;
 use std::collections::HashMap;
 
 #[derive(PartialEq, Eq, Hash)]
@@ -195,6 +196,9 @@ fn main() {
 
     while ! world.game_over {
         // read a command
+        print!("> ");
+        io::stdout().flush();
+
         let mut input = String::new();
 
         io::stdin().read_line(&mut input)
