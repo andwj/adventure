@@ -48,7 +48,11 @@ fn sanitize_word(word: &str) -> String {
         }
     }
 
-    s
+    // ignore certain words
+    match s.as_str() {
+        "a" | "an" | "the" | "to" => String::new(),
+        _ => s
+    }
 }
 
 fn sanitize_list(words: &Vec<&str>) -> Vec<String> {
