@@ -17,6 +17,7 @@ enum RoomId {
     Mountain,
     Forest,
     Lake,
+
     Outside,  // of the castle
     Castle,   // inside it
     Treasury
@@ -180,7 +181,7 @@ impl World {
                     Exit::new(Dir::N, Castle, Lock::Free),
                 ],
                 objects: vec![
-                    String::from("guard"),
+                    String::from("treasure"),
                 ]
             });
 
@@ -234,7 +235,11 @@ fn quit_msg() {
 }
 
 fn solved_msg() {
-    println!("Congratulations, you have won!");
+    println!("");
+    println!("With your good health and new-found wealth, you live");
+    println!("happily ever after (well... around 50 years or so).");
+    println!("");
+    println!("Congratulations, you solved the game!");
 }
 
 #[allow(dead_code)]
@@ -497,6 +502,11 @@ impl World {
 
         self.get_object(noun1);
         println!("You pick up the {}.", noun1);
+
+        if noun1 == "treasure" {
+            solved_msg();
+            self.game_over = true;
+        }
     }
 
     fn cmd_feed(&mut self, noun1: &str, noun2: &str) {
@@ -563,7 +573,7 @@ impl World {
                 if self.found_key {
                     println!("You enjoy a nice swim in the lake.");
                 } else {
-                    println!("You dive into the lake, and at the bottom you find a\nshiny golden key!");
+                    println!("You dive into the lake, enjoy paddling around for a while,\nbut at the bottom you discover a rusty old key!");
                     self.found_key = true;
                     self.get_object("key");
                 }
