@@ -18,8 +18,13 @@ for input and output.
 TODO
 ====
 
--  add more rooms
--  ability to get and drop objects
--  a few puzzles
--  winning condition
+-  describe lake
+-  describe outside castle
+-  describe inside castle
+-  describe treasury
+
+-  crocodile puzzle
+-  door puzzle
+-  parrot puzzle
+-  guard puzzle
 
