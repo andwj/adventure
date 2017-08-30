@@ -25,8 +25,7 @@ use RoomId::*;
 
 #[derive(PartialEq, Eq, Hash)]
 enum Dir {
-    N, S, E, W,
-    U, D, IN, OUT
+    N, S, E, W, U, D,
 }
 
 #[derive(Clone)]
@@ -154,8 +153,8 @@ impl World {
             Room {
                 description: "OUTSIDE CASTLE", // FIXME
                 exits: vec![
-                    Exit::new(Dir::W,  Forest, Lock::Free),
-                    Exit::new(Dir::IN, Castle, Lock::Key),
+                    Exit::new(Dir::W, Forest, Lock::Free),
+                    Exit::new(Dir::E, Castle, Lock::Key),
                 ],
                 objects: vec![]
             });
@@ -164,7 +163,7 @@ impl World {
             Room {
                 description:  "INSIDE CASTLE",  // FIXME
                 exits: vec![
-                    Exit::new(Dir::OUT, Outside, Lock::Free),
+                    Exit::new(Dir::W, Outside, Lock::Free),
                 ],
                 objects: vec![
                     String::from("treasure"),
@@ -310,8 +309,7 @@ impl World {
 
             "n"  | "north" | "s"  | "south" |
             "e"  | "east"  | "w"  | "west"  |
-            "d"  | "down"  | "u"  | "up"    |
-            "in" | "out" => self.cmd_go(cmd),
+            "d"  | "down"  | "u"  | "up"  => self.cmd_go(cmd),
 
             "drop" => self.cmd_drop(noun1),
 
@@ -387,9 +385,6 @@ impl World {
 
             "u" | "up"    => dir = Dir::U,
             "d" | "down"  => dir = Dir::D,
-
-            "in"  => dir = Dir::IN,
-            "out" => dir = Dir::OUT,
 
             _ => {
                 println!("I don't understand that direction.");
