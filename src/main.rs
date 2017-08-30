@@ -31,10 +31,10 @@ enum Dir {
 
 #[derive(Clone)]
 enum Lock {
-    NONE,     // travel is not possible at all
-    Free,     // travel is possible and has no obstacle
-    Key,      // a key is required
-    Dragon,   // a dragon is in the way
+    NONE,      // travel is not possible at all
+    Free,      // travel is possible and has no obstacle
+    Key,       // a key is required
+    Crocodile, // a monster is blocking the path
 }
 
 struct Exit {
@@ -373,8 +373,8 @@ impl World {
                 return;
             }
 
-            _ => {
-                println!("A scary monster blocks your path!");
+            Lock::Crocodile => {
+                println!("A huge, scary crocodile blocks your path!");
                 return;
             }
         }
