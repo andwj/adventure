@@ -293,6 +293,8 @@ impl World {
 
             "open" | "unlock" => self.cmd_open(noun1),
 
+            "swim" | "dive"  => self.cmd_swim(),
+
             "use"  | "apply" => self.cmd_use(noun1),
 
             _ => {
@@ -487,6 +489,29 @@ impl World {
         // TODO: a puzzle involving unlocking a door
 
         println!("You cannot open that!");
+    }
+
+    fn cmd_swim(&mut self) {
+        match self.location {
+            Lake => {
+                if self.found_key {
+                    println!("You enjoy a nice swim in the lake.");
+                } else {
+                    println!("You dive into the lake, and at the bottom you find a\nshiny golden key!");
+                    self.found_key = true;
+                    self.get_object("key");
+                }
+            },
+
+            Outside => {
+                println!("But the moat is full of crocodiles!");
+                return;
+            },
+
+            _ => {
+                println!("There is nowhere to swim here.");
+            }
+        }
     }
 
     fn cmd_use(&mut self, noun1: &str) {
