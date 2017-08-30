@@ -118,10 +118,10 @@ impl World {
             Room {
                 description: "You are standing on a large grassy mountain.\nTo the north you see a thick forest.\nOther directions are blocked by steep cliffs.",
                 exits: vec![
-                    Exit::new( Dir::N, Forest, Lock::Free),
+                    Exit::new(Dir::N, Forest, Lock::Free),
                 ],
                 objects: vec![
-                    String::from("sandwich"),
+                    String::from("roast"),
                 ]
             });
 
@@ -129,13 +129,45 @@ impl World {
             Room {
                 description: "You are in a forest, surrounded by dense trees and shrubs.\nA wide path slopes gently upwards to the south, and\nnarrow paths lead east and west.",
                 exits: vec![
-                    Exit::new( Dir::S, Mountain, Lock::Free),
-                    Exit::new( Dir::W, Lake,     Lock::Free),
-                    Exit::new( Dir::E, Outside,  Lock::Free),
+                    Exit::new(Dir::S, Mountain, Lock::Free),
+                    Exit::new(Dir::W, Lake,     Lock::Free),
+                    Exit::new(Dir::E, Outside,  Lock::Crocodile),
                 ],
                 objects: vec![
                     String::from("crocodile"),
                     String::from("parrot")
+                ]
+            });
+
+        rm.insert(Lake,
+            Room {
+                description: "LAKE ",  // FIXME
+                exits: vec![
+                    Exit::new(Dir::E, Forest, Lock::Free),
+                ],
+                objects: vec![
+                    String::from("carrot"),
+                ]
+            });
+
+        rm.insert(Outside,
+            Room {
+                description: "OUTSIDE CASTLE", // FIXME
+                exits: vec![
+                    Exit::new(Dir::W,  Forest, Lock::Free),
+                    Exit::new(Dir::IN, Castle, Lock::Key),
+                ],
+                objects: vec![]
+            });
+
+        rm.insert(Castle,
+            Room {
+                description:  "INSIDE CASTLE",  // FIXME
+                exits: vec![
+                    Exit::new(Dir::OUT, Outside, Lock::Free),
+                ],
+                objects: vec![
+                    String::from("treasure"),
                 ]
             });
 
@@ -376,12 +408,12 @@ impl World {
             Lock::NONE => {
                 println!("You cannot go that way.");
                 return;
-            }
+            },
 
             Lock::Key => {
                 println!("There is a locked door in your way.");
                 return;
-            }
+            },
 
             Lock::Crocodile => {
                 println!("A huge, scary crocodile blocks your path!");
@@ -539,10 +571,14 @@ fn main() {
     world.describe_room();
 
     while ! world.game_over {
-        // read a command
+        // display a prompt
         print!("> ");
-        io::stdout().flush();
 
+        #[allow(unused_must_use)] {
+            io::stdout().flush();
+        }
+
+        // read a command
         let mut input = String::new();
 
         io::stdin().read_line(&mut input)
