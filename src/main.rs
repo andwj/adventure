@@ -411,8 +411,6 @@ impl World {
         // check for an obstacle...
         let obst = room.can_travel(&dir);
 
-let obst = Lock::Free;
-
         match obst {
             Lock::Free => (),
 
@@ -463,9 +461,29 @@ let obst = Lock::Free;
     }
 
     fn cmd_get(&mut self, noun1: &str) {
-        if noun1 == "" {
-            println!("Get what??");
-            return;
+
+        match noun1 {
+            "" => {
+                println!("Get what??");
+                return;
+            },
+
+            "crocodile" => {
+                println!("There mere thought of wrestling with that savage beast\nparalyses you with fear!");
+                return;
+            },
+
+            "parrot" => {
+                println!("The parrot nimbly evades your grasp.");
+                return;
+            },
+
+            "guard" => {
+                println!("A momentary blush suggests the guard was flattered.");
+                return;
+            },
+
+            _ => ()
         }
 
         {
