@@ -51,10 +51,55 @@ impl Exit {
     }
 }
 
+struct ObjectList {
+    v: Vec<String>
+}
+
+impl ObjectList {
+    fn new() -> ObjectList {
+        ObjectList { v: vec![] }
+    }
+
+    fn from(names: &[&str]) -> ObjectList {
+        let mut result = Self::new();
+
+        for name in names {
+            result.add(name);
+        }
+
+        result
+    }
+
+    fn add(&mut self, name: &str) {
+        self.v.push(String::from(name));
+    }
+
+    fn has(&self, name: &str) -> bool {
+        for i in 0 .. self.v.len() {
+            if self.v[i].as_str() == name {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    fn remove(&mut self, name: &str) -> bool {
+        for i in 0 .. self.v.len() {
+            if self.v[i].as_str() == name {
+                self.v.swap_remove(i);
+                return true;
+            }
+        }
+
+        false
+    }
+}
+
 struct Room {
     description: &'static str,
     exits: Vec<Exit>,
-    objects: Vec<String>,
+    objects: ObjectList,
 }
 
 impl Room {
@@ -77,28 +122,13 @@ impl Room {
 
         RoomId::NONE
     }
-
-    fn get_object(&mut self, name: &str) -> bool {
-        for i in 0 .. self.objects.len() {
-            if self.objects[i].as_str() == name {
-                self.objects.swap_remove(i);
-                return true;
-            }
-        }
-
-        false
-    }
-
-    fn put_object(&mut self, name: &str) {
-        self.objects.push(String::from(name));
-    }
 }
 
 struct World {
     game_over: bool,
     rooms: HashMap<RoomId,Room>,
     location: RoomId,
-    inventory: Vec<String>,
+    inventory: ObjectList,
     found_key: bool,
 }
 
@@ -108,7 +138,7 @@ impl World {
             game_over: false,
             rooms: World::create_rooms(),
             location: Mountain,
-            inventory: vec![ String::from("sword") ],
+            inventory: ObjectList::from(&["sword"]),
             found_key: false,
         }
     }
@@ -122,9 +152,7 @@ impl World {
                 exits: vec![
                     Exit::new(Dir::N, Forest, Lock::Free),
                 ],
-                objects: vec![
-                    String::from("roast"),
-                ]
+                objects: ObjectList::from(&["roast"])
             });
 
         rm.insert(Forest,
@@ -135,10 +163,7 @@ impl World {
                     Exit::new(Dir::W, Lake,     Lock::Free),
                     Exit::new(Dir::E, Outside,  Lock::Crocodile),
                 ],
-                objects: vec![
-                    String::from("crocodile"),
-                    String::from("parrot")
-                ]
+                objects: ObjectList::from(&["crocodile", "parrot"])
             });
 
         rm.insert(Lake,
@@ -147,9 +172,7 @@ impl World {
                 exits: vec![
                     Exit::new(Dir::E, Forest, Lock::Free),
                 ],
-                objects: vec![
-                    String::from("carrot"),
-                ]
+                objects: ObjectList::from(&["carrot"])
             });
 
         rm.insert(Outside,
@@ -159,7 +182,7 @@ impl World {
                     Exit::new(Dir::W, Forest, Lock::Free),
                     Exit::new(Dir::E, Castle, Lock::Key),
                 ],
-                objects: vec![]
+                objects: ObjectList::new()
             });
 
         rm.insert(Castle,
@@ -169,9 +192,7 @@ impl World {
                     Exit::new(Dir::W, Outside,  Lock::Free),
                     Exit::new(Dir::S, Treasury, Lock::Password),
                 ],
-                objects: vec![
-                    String::from("guard"),
-                ]
+                objects: ObjectList::from(&["guard"])
             });
 
         rm.insert(Treasury,
@@ -180,9 +201,7 @@ impl World {
                 exits: vec![
                     Exit::new(Dir::N, Castle, Lock::Free),
                 ],
-                objects: vec![
-                    String::from("treasure"),
-                ]
+                objects: ObjectList::from(&["treasure"])
             });
 
         rm
@@ -194,34 +213,9 @@ impl World {
         println!("{}", room.description);
 
         // show items and monsters
-        for ob in &room.objects {
+        for ob in &room.objects.v {
             println!("There is a {} here.", ob);
         }
-    }
-
-    fn has_object(&self, name: &str) -> bool {
-        for i in 0 .. self.inventory.len() {
-            if self.inventory[i].as_str() == name {
-                return true;
-            }
-        }
-
-        false
-    }
-
-    fn drop_object(&mut self, name: &str) -> bool {
-        for i in 0 .. self.inventory.len() {
-            if self.inventory[i].as_str() == name {
-                self.inventory.swap_remove(i);
-                return true;
-            }
-        }
-
-        false
-    }
-
-    fn get_object(&mut self, name: &str) {
-        self.inventory.push(String::from(name));
     }
 }
 
@@ -374,10 +368,10 @@ impl World {
     fn cmd_invent(&mut self) {
         println!("You are carrying:");
 
-        if self.inventory.is_empty() {
+        if self.inventory.v.is_empty() {
             println!("    nothing.");
         } else {
-            for ob in &self.inventory {
+            for ob in &self.inventory.v {
                 println!("    a {}.", ob);
             }
         }
@@ -454,14 +448,14 @@ impl World {
             return;
         }
 
-        if ! self.drop_object(noun1) {
+        if ! self.inventory.remove(noun1) {
             println!("You are not carrying a {}.", noun1);
             return;
         }
 
         let mut room = self.rooms.get_mut(&self.location).unwrap();
 
-        room.put_object(noun1);
+        room.objects.add(noun1);
         println!("You drop the {}.", noun1);
     }
 
@@ -494,13 +488,13 @@ impl World {
         {
             let mut room = self.rooms.get_mut(&self.location).unwrap();
 
-            if ! room.get_object(noun1) {
+            if ! room.objects.remove(noun1) {
                 println!("There is no {} here you can take.", noun1);
                 return;
             }
         }
 
-        self.get_object(noun1);
+        self.inventory.add(noun1);
         println!("You pick up the {}.", noun1);
 
         if noun1 == "treasure" {
@@ -529,7 +523,7 @@ impl World {
             return;
         }
 
-        if ! self.has_object(noun1) {
+        if ! self.inventory.has(noun1) {
             println!("You can't give a {}, as you don't have one!", noun1);
             return;
         }
@@ -547,7 +541,7 @@ impl World {
 
         // TODO: some funny messages about attacking something
 
-        let have_sword = self.has_object("sword");
+        let have_sword = self.inventory.has("sword");
 
         if have_sword {
             println!("You swing your sword, but miss!");
@@ -575,7 +569,7 @@ impl World {
                 } else {
                     println!("You dive into the lake, enjoy paddling around for a while,\nbut at the bottom you discover a rusty old key!");
                     self.found_key = true;
-                    self.get_object("key");
+                    self.inventory.add("key");
                 }
             },
 
@@ -596,7 +590,7 @@ impl World {
             return;
         }
 
-        if ! self.has_object(noun1) {
+        if ! self.inventory.has(noun1) {
             println!("You don't have any {} to use.", noun1);
             return;
         }
