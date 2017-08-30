@@ -172,7 +172,7 @@ impl World {
                 exits: vec![
                     Exit::new(Dir::E, Forest, Lock::Free),
                 ],
-                objects: ObjectList::from(&["carrot"])
+                objects: ObjectList::new()
             });
 
         rm.insert(Outside,
@@ -192,7 +192,7 @@ impl World {
                     Exit::new(Dir::W, Outside,  Lock::Free),
                     Exit::new(Dir::S, Treasury, Lock::Password),
                 ],
-                objects: ObjectList::from(&["guard"])
+                objects: ObjectList::from(&["guard", "carrot"])
             });
 
         rm.insert(Treasury,
