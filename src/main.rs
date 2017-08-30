@@ -97,6 +97,7 @@ struct World {
     rooms: HashMap<RoomId,Room>,
     location: RoomId,
     inventory: Vec<String>,
+    found_key: bool,
 }
 
 impl World {
@@ -105,7 +106,8 @@ impl World {
             game_over: false,
             rooms: World::create_rooms(),
             location: Mountain,
-            inventory: vec![],
+            inventory: vec![ String::from("sword") ],
+            found_key: false,
         }
     }
 
@@ -119,7 +121,7 @@ impl World {
                     Exit::new( Dir::N, Forest, Lock::Free),
                 ],
                 objects: vec![
-                    String::from("sword")
+                    String::from("sandwich"),
                 ]
             });
 
@@ -131,7 +133,10 @@ impl World {
                     Exit::new( Dir::W, Lake,     Lock::Free),
                     Exit::new( Dir::E, Outside,  Lock::Free),
                 ],
-                objects: vec![]
+                objects: vec![
+                    String::from("crocodile"),
+                    String::from("parrot")
+                ]
             });
 
         rm
@@ -282,6 +287,8 @@ impl World {
 
             "give" | "offer" => self.cmd_give(noun1, noun2),
 
+            "feed" => self.cmd_feed(noun1, noun2),
+
             "kill" | "attack" | "hit" | "fight" => self.cmd_attack(noun1),
 
             "open" | "unlock" => self.cmd_open(noun1),
@@ -415,7 +422,7 @@ impl World {
             let mut room = self.rooms.get_mut(&self.location).unwrap();
 
             if ! room.get_object(noun1) {
-                println!("I cannot see any {} here.", noun1);
+                println!("There is no {} here you can take.", noun1);
                 return;
             }
         }
@@ -424,19 +431,28 @@ impl World {
         println!("You pick up the {}.", noun1);
     }
 
+    fn cmd_feed(&mut self, noun1: &str, noun2: &str) {
+        if noun1 == "" || noun2 == "" {
+            println!("Feed what to whom??");
+            return;
+        }
+
+        self.cmd_give(noun1, noun2);
+    }
+
     fn cmd_give(&mut self, noun1: &str, noun2: &str) {
         if noun1 == "" {
             println!("Give what??");
             return;
         }
 
-        if ! self.has_object(noun1) {
-            println!("You can't give a {}, as you don't have one!", noun1);
+        if noun2 == "" {
+            println!("Give to whom??");
             return;
         }
 
-        if noun2 == "" {
-            println!("Give to whom??");
+        if ! self.has_object(noun1) {
+            println!("You can't give a {}, as you don't have one!", noun1);
             return;
         }
 
