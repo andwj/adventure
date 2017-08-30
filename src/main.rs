@@ -260,9 +260,10 @@ fn sanitize_word(word: &str) -> String {
         }
     }
 
-    // ignore certain words
+    // expand abbreviations and ignore certain words
     match s.as_str() {
         "a" | "an" | "the" | "to" => String::new(),
+        "croc" => String::from("crocodile"),
         _ => s
     }
 }
