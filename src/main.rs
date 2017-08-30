@@ -187,6 +187,7 @@ fn solved_msg() {
     println!("Congratulations, you have won!");
 }
 
+#[allow(dead_code)]
 enum Parse {
     Empty,
     Bad,
