@@ -19,6 +19,7 @@ enum RoomId {
     Lake,
     Outside,  // of the castle
     Castle,   // inside it
+    Treasury
 }
 
 use RoomId::*;
@@ -34,6 +35,7 @@ enum Lock {
     Free,      // travel is possible and has no obstacle
     Key,       // a key is required
     Crocodile, // a monster is blocking the path
+    Password,  // need to tell a password
 }
 
 struct Exit {
@@ -163,10 +165,22 @@ impl World {
             Room {
                 description:  "INSIDE CASTLE",  // FIXME
                 exits: vec![
-                    Exit::new(Dir::W, Outside, Lock::Free),
+                    Exit::new(Dir::W, Outside,  Lock::Free),
+                    Exit::new(Dir::S, Treasury, Lock::Password),
                 ],
                 objects: vec![
-                    String::from("treasure"),
+                    String::from("guard"),
+                ]
+            });
+
+        rm.insert(Treasury,
+            Room {
+                description:  "TREASURY",  // FIXME
+                exits: vec![
+                    Exit::new(Dir::N, Castle, Lock::Free),
+                ],
+                objects: vec![
+                    String::from("guard"),
                 ]
             });
 
@@ -397,6 +411,8 @@ impl World {
         // check for an obstacle...
         let obst = room.can_travel(&dir);
 
+let obst = Lock::Free;
+
         match obst {
             Lock::Free => (),
 
@@ -412,6 +428,11 @@ impl World {
 
             Lock::Crocodile => {
                 println!("A huge, scary crocodile blocks your path!");
+                return;
+            },
+
+            Lock::Password => {
+                println!("The guard stops you and says \"Hey, you cannot go\nin there unlessy ou tell me the password!\".");
                 return;
             }
         }
