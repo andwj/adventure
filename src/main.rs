@@ -669,8 +669,8 @@ impl World {
 
             PASSWORD => {
                 if self.location == Castle {
-                    println!("The guard says \"Welcome Sire!\" and beckons you to");
-                    println!("enter the treasury.");
+                    println!("The guard says \"Welcome Sire!\" and beckons you to enter");
+                    println!("the treasury.");
 
                     let mut room = self.rooms.get_mut(&self.location).unwrap();
                     room.free_exit(&Dir::S);
@@ -715,15 +715,13 @@ fn main() {
         // display a prompt
         print!("> ");
 
-        #[allow(unused_must_use)] {
-            io::stdout().flush();
-        }
+        io::stdout().flush().expect("Error flushing stdout!");
 
         // read a command
         let mut input = String::new();
 
         io::stdin().read_line(&mut input)
-                   .expect("Error reading input!");
+                   .expect("Error reading stdin!");
 
         // parse the command into words
         let parse = parse_input(&input);
