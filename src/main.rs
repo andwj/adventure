@@ -1,5 +1,5 @@
 //
-// A very simple text adventure
+// A simple text adventure game
 //
 // by Andrew Apted, 2017.
 //
@@ -176,7 +176,7 @@ impl World {
 
         rm.insert(Lake,
             Room {
-                description: "LAKE ",  // FIXME
+                description: "You stand on the shore of a beautiful lake, soft sand under\nyour feet.  The clear water looks warm and inviting.",
                 exits: vec![
                     Exit::new(Dir::E, Forest, Lock::Free),
                 ],
@@ -185,7 +185,7 @@ impl World {
 
         rm.insert(Outside,
             Room {
-                description: "OUTSIDE CASTLE", // FIXME
+                description: "The forest is thinning off here.  To the east you can see a\nlarge castle made of dark brown stone.  A narrow path leads\nback into the forest to the west.",
                 exits: vec![
                     Exit::new(Dir::W, Forest, Lock::Free),
                     Exit::new(Dir::E, Castle, Lock::Key),
@@ -195,7 +195,8 @@ impl World {
 
         rm.insert(Castle,
             Room {
-                description:  "INSIDE CASTLE",  // FIXME
+                description: "You are standing inside a magnificant, opulent castle.\nA spacious staircase leads to the upper levels of the castle,\nbut it is currently blocked off by rusty delivery crates.\nA large wooden door leads outside to the west, and a small\ndoor leads south.\n",
+
                 exits: vec![
                     Exit::new(Dir::W, Outside,  Lock::Free),
                     Exit::new(Dir::S, Treasury, Lock::Password),
