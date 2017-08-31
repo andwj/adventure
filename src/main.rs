@@ -195,7 +195,7 @@ impl World {
 
         rm.insert(Castle,
             Room {
-                description: "You are standing inside a magnificant, opulent castle.\nA spacious staircase leads to the upper levels of the castle,\nbut it is currently blocked off by rusty delivery crates.\nA large wooden door leads outside to the west, and a small\ndoor leads south.\n",
+                description: "You are standing inside a magnificant, opulent castle.\nA staircase leads to the upper levels, but unfortunately\nit is currently blocked off by rusty delivery crates.\nA large wooden door leads outside to the west, and a small\ndoor leads south.",
 
                 exits: vec![
                     Exit::new(Dir::W, Outside,  Lock::Free),
@@ -206,7 +206,8 @@ impl World {
 
         rm.insert(Treasury,
             Room {
-                description:  "TREASURY",  // FIXME
+                description: "Wow!  This room is full of valuable treasures.  Gold, jewels,\nvaluable antiques sit on sturdy shelves against the walls.\nHowever...... perhaps money isn't everything??",
+
                 exits: vec![
                     Exit::new(Dir::N, Castle, Lock::Free),
                 ],
@@ -444,7 +445,7 @@ impl World {
             },
 
             Lock::Password => {
-                println!("The guard stops you and says \"Hey, you cannot go\nin there unless you tell me the password!\".");
+                println!("The guard stops you and says \"Hey, you cannot go in there\nunless you tell me the password!\".");
                 return;
             }
         }
