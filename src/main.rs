@@ -122,6 +122,14 @@ impl Room {
 
         RoomId::NONE
     }
+
+    fn free_exit(&mut self, dir: &Dir) {
+        for e in &mut self.exits {
+            if e.dir == *dir {
+                e.lock = Lock::Free;
+            }
+        }
+    }
 }
 
 struct World {
@@ -152,7 +160,7 @@ impl World {
                 exits: vec![
                     Exit::new(Dir::N, Forest, Lock::Free),
                 ],
-                objects: ObjectList::from(&["roast"])
+                objects: ObjectList::new()
             });
 
         rm.insert(Forest,
@@ -172,7 +180,7 @@ impl World {
                 exits: vec![
                     Exit::new(Dir::E, Forest, Lock::Free),
                 ],
-                objects: ObjectList::new()
+                objects: ObjectList::from(&["steak"])
             });
 
         rm.insert(Outside,
@@ -294,7 +302,7 @@ fn parse_input(input: &String) -> Parse {
     Parse::Words(words)
 }
 
-const PASSWORD: &str = "frustum";
+const PASSWORD: &str = "piehard";
 
 impl World {
     fn parse_command(&mut self, words: &Vec<String>) {
@@ -539,12 +547,25 @@ impl World {
 
         if noun1 == "carrot" && noun2 == "parrot" {
             self.inventory.remove(noun1);
-            println!("The parrot cwhappily starts chewing on the carrot.  Every now");
-            println!("and then you hear it say \"{}\" as it devours the carrot..", PASSWORD);
+            println!("The parrot happily starts chewing on the carrot.  Every now");
+            println!("and then you hear it say \"{}\" as it munches the carrot.", PASSWORD);
             return;
         }
 
-        // TODO: a puzzle involving giving something
+        if noun1 == "steak" && noun2 == "crocodile" {
+            self.inventory.remove(noun1);
+
+            println!("You hurl the steak towards the crocodile, which suddenly");
+            println!("snaps into action, grabbing the steak in its steely jaws");
+            println!("and slithering off to devour its meal in private.");
+
+            let mut room = self.rooms.get_mut(&self.location).unwrap();
+            room.objects.remove("crocodile");
+            room.free_exit(&Dir::E);
+
+            return;
+        }
+
 
         println!("Don't be ridiculous!");
     }
