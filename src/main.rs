@@ -435,7 +435,7 @@ impl World {
             },
 
             Lock::Key => {
-                println!("There is a locked door in your way.");
+                println!("The castle door is locked!");
                 return;
             },
 
@@ -617,7 +617,21 @@ impl World {
             return;
         }
 
-        // TODO: a puzzle involving unlocking a door
+        if noun1 == "door" && self.location == Outside {
+            if ! self.inventory.has("key") {
+                println!("You don't have a key!");
+                return;
+            }
+
+            println!("Carefully you insert the rusty old key in the lock, and turn it.");
+            println!("Yes!!  The door unlocks!  However the key breaks into several");
+            println!("pieces and is useless now.");
+            self.inventory.remove("key");
+
+            let mut room = self.rooms.get_mut(&self.location).unwrap();
+            room.free_exit(&Dir::E);
+            return;
+        }
 
         println!("You cannot open that!");
     }
@@ -681,7 +695,10 @@ impl World {
             return;
         }
 
-        // TODO: a puzzle involving using something
+        if noun1 == "key" {
+            self.cmd_open("door");
+            return;
+        }
 
         println!("You fiddle with your {}, but nothing happens.", noun1);
     }
