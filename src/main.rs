@@ -230,6 +230,7 @@ impl World {
 }
 
 fn intro_msg() {
+    println!("");
     println!("Welcome to a very simple adventure game!");
     println!("");
 }
