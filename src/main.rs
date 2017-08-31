@@ -36,7 +36,7 @@ enum Lock {
     Free,      // travel is possible and has no obstacle
     Key,       // a key is required
     Crocodile, // a monster is blocking the path
-    Password,  // need to tell a password
+    Password,  // a password is needed
 }
 
 struct Exit {
@@ -241,15 +241,13 @@ fn quit_msg() {
 fn solved_msg() {
     println!("");
     println!("With your good health and new-found wealth, you live");
-    println!("happily ever after (well... around 50 years or so).");
+    println!("happily ever after (well... about 50 years or so).");
     println!("");
     println!("Congratulations, you solved the game!");
 }
 
-#[allow(dead_code)]
 enum Parse {
     Empty,
-    Bad,
     Words(Vec<String>),
 }
 
@@ -445,7 +443,8 @@ impl World {
             },
 
             Lock::Password => {
-                println!("The guard stops you and says \"Hey, you cannot go in there\nunless you tell me the password!\".");
+                println!("The guard stops you and says \"Hey, you cannot go in there");
+                println!("unless you tell me the password!\".");
                 return;
             }
         }
@@ -501,7 +500,6 @@ impl World {
             _ => ()
         }
 
-// !!! if false
         {
             let mut room = self.rooms.get_mut(&self.location).unwrap();
 
@@ -553,7 +551,8 @@ impl World {
         if noun1 == "carrot" && noun2 == "parrot" {
             self.inventory.remove(noun1);
             println!("The parrot happily starts chewing on the carrot.  Every now");
-            println!("and then you hear it say \"{}\" as it munches the carrot.", PASSWORD);
+            println!("and then you hear it say \"{}\" as it munches away.", PASSWORD);
+            println!("I wonder who this parrot belonged to??");
             return;
         }
 
@@ -585,14 +584,15 @@ impl World {
 
         match noun1 {
             "crocodile" => {
-                println!("The mere thought of wrestling with that savage beast\nparalyses you with fear!");
+                println!("The mere thought of wrestling with that savage beast");
+                println!("paralyses you with fear!");
                 return;
             },
 
             "guard" => {
                 if have_sword {
                     println!("You and the guard begin a dangerous sword fight!");
-                    println!("But after ten minutes, you are both exhausted and");
+                    println!("But after ten minutes or so, you are both exhausted and");
                     println!("decide to call it a draw.");
                 } else {
                     println!("You raise your hands to fight, then notice that the guard");
@@ -642,7 +642,8 @@ impl World {
                 if self.found_key {
                     println!("You enjoy a nice swim in the lake.");
                 } else {
-                    println!("You dive into the lake, enjoy paddling around for a while,\nbut at the bottom you discover a rusty old key!");
+                    println!("You dive into the lake, enjoy paddling around for a while.");
+                    println!("Diving a bit deeper, you discover a rusty old key!");
                     self.found_key = true;
                     self.inventory.add("key");
                 }
@@ -728,7 +729,6 @@ fn main() {
 
         match parse {
             Parse::Empty    => /* ignore a blank line */ (),
-            Parse::Bad      => /* parser said why */ (),
             Parse::Words(w) => world.parse_command(&w)
         }
     }
