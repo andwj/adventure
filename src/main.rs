@@ -262,7 +262,7 @@ fn sanitize_word(word: &str) -> String {
 
     // expand abbreviations and ignore certain words
     match s.as_str() {
-        "a" | "an" | "the" | "to" => String::new(),
+        "a" | "an" | "the" | "to" | "with" => String::new(),
         "croc" => String::from("crocodile"),
         _ => s
     }
@@ -293,6 +293,8 @@ fn parse_input(input: &String) -> Parse {
 
     Parse::Words(words)
 }
+
+const PASSWORD: &str = "frustum";
 
 impl World {
     fn parse_command(&mut self, words: &Vec<String>) {
@@ -486,6 +488,7 @@ impl World {
             _ => ()
         }
 
+// !!! if false
         {
             let mut room = self.rooms.get_mut(&self.location).unwrap();
 
@@ -514,18 +517,30 @@ impl World {
     }
 
     fn cmd_give(&mut self, noun1: &str, noun2: &str) {
-        if noun1 == "" {
-            println!("Give what??");
-            return;
-        }
-
-        if noun2 == "" {
-            println!("Give to whom??");
+        if noun1 == "" || noun2 == "" {
+            println!("Give what to whom??");
             return;
         }
 
         if ! self.inventory.has(noun1) {
             println!("You can't give a {}, as you don't have one!", noun1);
+            return;
+        }
+
+        // check recipient is present
+        {
+            let room = self.rooms.get_mut(&self.location).unwrap();
+
+            if ! room.objects.has(noun2) {
+                println!("There is no {} here.", noun2);
+                return;
+            }
+        }
+
+        if noun1 == "carrot" && noun2 == "parrot" {
+            self.inventory.remove(noun1);
+            println!("The parrot cwhappily starts chewing on the carrot.  Every now");
+            println!("and then you hear it say \"{}\" as it devours the carrot..", PASSWORD);
             return;
         }
 
