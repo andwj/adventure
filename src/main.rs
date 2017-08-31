@@ -349,6 +349,9 @@ impl World {
 
             "swim" | "dive"  => self.cmd_swim(),
 
+            "say"  | "speak" | "tell"  => self.cmd_say(noun1),
+            PASSWORD => self.cmd_say(PASSWORD),
+
             "use"  | "apply" => self.cmd_use(noun1),
 
             _ => {
@@ -440,7 +443,7 @@ impl World {
             },
 
             Lock::Password => {
-                println!("The guard stops you and says \"Hey, you cannot go\nin there unlessy ou tell me the password!\".");
+                println!("The guard stops you and says \"Hey, you cannot go\nin there unless you tell me the password!\".");
                 return;
             }
         }
@@ -638,6 +641,31 @@ impl World {
                 println!("There is nowhere to swim here.");
             }
         }
+    }
+
+    fn cmd_say(&mut self, noun1: &str) {
+
+        match noun1 {
+            "" => {
+                println!("Say what??");
+                return;
+            }
+
+            PASSWORD => {
+                if self.location == Castle {
+                    println!("The guard says \"Welcome Sire!\" and beckons you to");
+                    println!("enter the treasury.");
+
+                    let mut room = self.rooms.get_mut(&self.location).unwrap();
+                    room.free_exit(&Dir::S);
+                    return;
+                }
+            },
+
+            _ => ()
+        }
+
+        println!("You say \"{}\" but nothing happens.", noun1);
     }
 
     fn cmd_use(&mut self, noun1: &str) {
