@@ -479,7 +479,7 @@ impl World {
             },
 
             "crocodile" => {
-                println!("There mere thought of wrestling with that savage beast\nparalyses you with fear!");
+                println!("Are you serious?  The only thing you would get is eaten!");
                 return;
             },
 
@@ -576,9 +576,28 @@ impl World {
             return;
         }
 
-        // TODO: some funny messages about attacking something
-
         let have_sword = self.inventory.has("sword");
+
+        match noun1 {
+            "crocodile" => {
+                println!("The mere thought of wrestling with that savage beast\nparalyses you with fear!");
+                return;
+            },
+
+            "guard" => {
+                if have_sword {
+                    println!("You and the guard begin a dangerous sword fight!");
+                    println!("But after ten minutes, you are both exhausted and");
+                    println!("decide to call it a draw.");
+                } else {
+                    println!("You raise your hands to fight, then notice that the guard");
+                    println!("is carrying a sword, so you shadow box for a while instead.");
+                }
+                return;
+            },
+
+            _ => ()
+        }
 
         if have_sword {
             println!("You swing your sword, but miss!");
