@@ -304,7 +304,7 @@ fn parse_input(input: &String) -> Parse {
     Parse::Words(words)
 }
 
-const PASSWORD: &str = "piehard";
+const PASSWORD: &str = "piehole";
 
 impl World {
     fn parse_command(&mut self, words: &Vec<String>) {
